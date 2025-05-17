@@ -20,6 +20,43 @@ export const useProductStore=create((set)=>({
         const data=await response.json()
         set((state)=>({products:[...state.products,data.data]})) //.data came from the backend
         return {success:true,message:'Product created successfully'}
+    },
+    fetchProducts:async ()=>{
+        const response=await fetch('/api/products')
+        const data=await response.json()
+        set({products:data.data})
+    },
+    deleteProduct:async (id)=>{
+        const response=await fetch(`/api/products/${id}`,{
+            method:'DELETE'
+        })
+        const data=await response.json()
+        if(!data.success){
+            return {success:false,message:data.message}
+        }
+
+        //this is to remove the product from the state
+        set((state)=>({products:state.products.filter((product)=>product._id!==id)}))
+        return {success:true,message:data.message}
+    },
+    updateProduct:async (id,updatedProduct)=>{
+        const response=await fetch(`/api/products/${id}`,{
+            method:'PATCH',
+            headers:{
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify(updatedProduct)
+        })
+        const data=await response.json()
+        if(!data.success){
+            return {success:false,message:data.message}
+        }
+        set((state)=>({
+            products:state.products.map((product)=>
+                product._id===id?data.data:product
+            )
+        }))
+        return {success:true,message:data.message}
     }
 }))
 

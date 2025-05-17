@@ -1,8 +1,10 @@
 import express from 'express';
+import Product from '../models/product.model.js';
+import mongoose from 'mongoose';    
 
 const router = express.Router();
 
-app.post("/api/products", async(req, res) => {
+router.post("/", async(req, res) => {
 
     const product = req.body;
     // Validate the product data
@@ -23,7 +25,7 @@ app.post("/api/products", async(req, res) => {
 
 });
 
-app.delete("/api/products/:id", async (req, res) => {
+router.delete("/:id", async (req, res) => {
     const { id } = req.params;
     console.log("Deleting product with ID:", id);
 
@@ -39,7 +41,7 @@ app.delete("/api/products/:id", async (req, res) => {
     }
 });
 
-app.get("/api/products", async (req, res) => {
+router.get("/", async (req, res) => {
     try {
         const products = await Product.find();
         res.status(200).json({success:true, data: products });
@@ -49,7 +51,7 @@ app.get("/api/products", async (req, res) => {
     }
 });
 
-app.patch("/api/products/:id", async (req, res) => { 
+router.patch("/:id", async (req, res) => { 
     const { id } = req.params;
     const updatedData = req.body;
 

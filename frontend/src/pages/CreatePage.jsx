@@ -8,6 +8,9 @@ import {
   Input,
   Button,
 } from "@chakra-ui/react";
+import { useProductStore } from "../store/product";
+import { useToast } from '@chakra-ui/react'
+import { set } from "mongoose";
 
 const CreatePage = () => {
   const [newProduct, setNewProduct] = useState({
@@ -16,8 +19,41 @@ const CreatePage = () => {
     image: "",
   });
 
-  const handleAddProduct = () => {
-    console.log("added product", newProduct);
+  
+  const toast=useToast()
+ const {createProduct}=useProductStore()
+
+  const handleAddProduct = async() => {
+    // console.log("added product", newProduct);
+    const {success,message}=await createProduct(newProduct)
+
+    if(!success){
+      toast({
+        title: 'Error',
+        description: message,
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
+      
+    }else{
+      toast({
+        title: 'Success',
+        description: message,
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      })
+    }
+
+    setNewProduct ({
+      name: "",
+      price: "",
+      image: "",
+    });
+
+    // console.log("Success: ", success);
+    // console.log("Message: ", message);
   };
 
   return (
